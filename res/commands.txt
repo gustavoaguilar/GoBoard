@@ -1,0 +1,26 @@
+find . -type f -name "*.log" -mtime +30 -exec rm -f {} \;
+tar -cvzf backup_$(date +%F).tar.gz /var/www/html/ /etc/nginx/
+ps aux | sort -rk 3,3 | head -n 11
+du -ah /var/log | sort -rh | head -n 10
+grep -rni "error" /var/log/nginx/ --include="*.log"
+journalctl -u nginx.service --since "1 hour ago" --no-pager
+netstat -tuln | grep LISTEN
+awk -F: '{ print $1 " -> " $6 }' /etc/passwd
+curl -sI https://ubuntu.com | grep -i server
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
+tail -f /var/log/syslog | grep --line-buffered -E "error|critical|warning"
+sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT
+find / -type f -size +100M -exec ls -lh {} \; 2>/dev/null
+lsof -i :8080 | awk 'NR!=1 {print $2}' | xargs kill -9
+cat /var/log/auth.log | grep "Failed password" | awk '{print $(NF-3)}' | sort | uniq -c
+chmod -R 755 /var/www/html && chown -R www-data:www-data /var/www/html
+dd if=/dev/zero of=/swapfile bs=1G count=4 status=progress
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@192.168.1.50
+df -h --total | grep total | awk '{print "Disk Usage: " $5}'
+free -h | grep Mem | awk '{print "RAM Free: " $4 " de " $2}'
+watch -n 1 "cat /proc/loadavg && netstat -an | grep :80 | wc -l"
+tcpdump -i eth0 -c 100 -w trafic.pcap port 80
+git clone http://github.com && cd repo && npm install
+docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+gpg --symmetric --cipher-algo AES256 secret_file.txt
+sudo do-release-upgrade -d
